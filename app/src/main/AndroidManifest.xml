@@ -19,10 +19,12 @@
             android:theme="@style/Theme.DiceRoller">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-2470800019467760~2798419968"/>
     </application>
 
 </manifest>
