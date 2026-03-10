@@ -1,6 +1,5 @@
-package com.example.diceroller.ui.theme
+package com.example.adroller.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

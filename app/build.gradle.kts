@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.diceroller"
+    namespace = "com.example.adroller"
     compileSdk = 36
 
     defaultConfig {
