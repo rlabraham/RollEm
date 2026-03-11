@@ -22,10 +22,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.adroller.ui.theme.DiceRollerTheme
+import com.google.android.gms.ads.MobileAds
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initAds()
         enableEdgeToEdge()
         setContent {
             DiceRollerTheme {
@@ -65,6 +70,19 @@ class MainActivity : ComponentActivity() {
             Button(onClick = {result = (1..6).random()}) {
                 Text(stringResource(R.string.roll))
             }
+        }
+    }
+
+    @Composable
+    fun BottomAd(modifier: Modifier = Modifier) {}
+
+    @Composable
+    fun TopAd(modifier: Modifier){}
+
+    private fun initAds() {
+        CoroutineScope(Dispatchers.IO).launch {
+            // Initialize the Google Mobile Ads SDK on a background thread.
+            MobileAds.initialize(this@MainActivity) {}
         }
     }
 }
