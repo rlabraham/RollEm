@@ -1,6 +1,5 @@
 package com.example.adroller
 
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -34,11 +33,6 @@ import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 
 class MainActivity : ComponentActivity() {
-    companion object {
-        private const val TEST_BANNER_AD_UNIT_ID = "ca-app-pub-3940256099942544/6300978111"
-        private const val PRODUCTION_BANNER_AD_UNIT_ID = "ca-app-pub-2470800019467760/REPLACE_WITH_REAL_BANNER_ID"
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initAds()
@@ -100,21 +94,22 @@ class MainActivity : ComponentActivity() {
                 .navigationBarsPadding(),
             contentAlignment = Alignment.Center
         ) {
-            BannerAd()
+            BannerAd("ca-app-pub-2470800019467760/3164718645")
         }
     }
 
     @Composable
-    fun BannerAd() {
+    fun BannerAd(adId: String = "") {
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-            Spacer(modifier = Modifier.height(24.dp))
             AndroidView(
                 modifier = Modifier.fillMaxWidth().height(50.dp),
                 factory = { context ->
                     AdView(context).apply {
-                        val adRequest = AdRequest.Builder().build();
-                        val adUnitId = if (adRequest.isTestDevice(context)) "ca-app-pub-3940256099942544/6300978111" else "foobar"
                         setAdSize(AdSize.BANNER)
+
+                        val adRequest = AdRequest.Builder().build();
+                        val adUnitId = if (adRequest.isTestDevice(context)) "ca-app-pub-3940256099942544/6300978111" else adId
+
                         this.adUnitId = adUnitId
                         loadAd(adRequest)
                     }
