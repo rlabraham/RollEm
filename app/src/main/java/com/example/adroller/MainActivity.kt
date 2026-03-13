@@ -48,6 +48,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun DiceRollerApp() {
         Column(modifier = Modifier.fillMaxSize()) {
+            TopAd()
             Box(
                 modifier = Modifier.weight(1f).fillMaxWidth(),
                 contentAlignment = Alignment.Center
@@ -87,11 +88,19 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
+    fun TopAd(modifier: Modifier = Modifier) {
+        Box(
+            modifier = modifier.fillMaxWidth().navigationBarsPadding(),
+            contentAlignment = Alignment.Center
+        ) {
+            BannerAd("ca-app-pub-2470800019467760/8597513307")
+        }
+    }
+
+    @Composable
     fun BottomAd(modifier: Modifier = Modifier) {
         Box(
-            modifier = modifier
-                .fillMaxWidth()
-                .navigationBarsPadding(),
+            modifier = modifier.fillMaxWidth().navigationBarsPadding(),
             contentAlignment = Alignment.Center
         ) {
             BannerAd("ca-app-pub-2470800019467760/3164718645")
