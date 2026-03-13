@@ -32,6 +32,10 @@ import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 
+const val BOTTOM_BANNER_ID = "ca-app-pub-2470800019467760/3164718645"
+const val TEST_BANNER_ID = "ca-app-pub-3940256099942544/6300978111"
+const val TOP_BANNER_ID = "ca-app-pub-2470800019467760/8597513307"
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,7 +97,7 @@ class MainActivity : ComponentActivity() {
             modifier = modifier.fillMaxWidth().navigationBarsPadding(),
             contentAlignment = Alignment.Center
         ) {
-            BannerAd("ca-app-pub-2470800019467760/8597513307")
+            BannerAd(TOP_BANNER_ID)
         }
     }
 
@@ -103,7 +107,7 @@ class MainActivity : ComponentActivity() {
             modifier = modifier.fillMaxWidth().navigationBarsPadding(),
             contentAlignment = Alignment.Center
         ) {
-            BannerAd("ca-app-pub-2470800019467760/3164718645")
+            BannerAd(BOTTOM_BANNER_ID)
         }
     }
 
@@ -117,7 +121,7 @@ class MainActivity : ComponentActivity() {
                         setAdSize(AdSize.BANNER)
 
                         val adRequest = AdRequest.Builder().build();
-                        val adUnitId = if (adRequest.isTestDevice(context)) "ca-app-pub-3940256099942544/6300978111" else adId
+                        val adUnitId = if (adRequest.isTestDevice(context)) TEST_BANNER_ID else adId
 
                         this.adUnitId = adUnitId
                         loadAd(adRequest)
