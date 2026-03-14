@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.example.adroller.gamestate.GameState
 import com.example.adroller.ui.theme.DiceRollerTheme
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -37,9 +38,11 @@ const val TEST_BANNER_ID = "ca-app-pub-3940256099942544/6300978111"
 const val TOP_BANNER_ID = "ca-app-pub-2470800019467760/8597513307"
 
 class MainActivity : ComponentActivity() {
+    private val gameState = GameState()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initAds()
+        MobileAds.initialize(this)
         enableEdgeToEdge()
         setContent {
             DiceRollerTheme {
@@ -85,7 +88,10 @@ class MainActivity : ComponentActivity() {
                 contentDescription = result.toString()
             )
             Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = {result = (1..6).random()}) {
+            Button(onClick = {
+                result = (1..6).random()
+                gameState.updateGameState(result)
+            }) {
                 Text(stringResource(R.string.roll))
             }
         }
@@ -129,9 +135,5 @@ class MainActivity : ComponentActivity() {
                 }
             )
         }
-    }
-
-    private fun initAds() {
-        MobileAds.initialize(this)
     }
 }
