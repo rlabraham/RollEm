@@ -16,12 +16,12 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -78,12 +78,16 @@ class MainActivity : ComponentActivity() {
         }
 
         val context = LocalContext.current
-        val mp = MediaPlayer.create(context, R.raw.dice_roll)
+        val isPreview = LocalInspectionMode.current
+
+        val mp = remember(context, isPreview) {
+            if (isPreview) null else MediaPlayer.create(context, R.raw.dice_roll)
+        }
 
         Column(
             modifier = modifier
                 .clickable(onClick = {
-                    mp.start()
+                    mp?.start()
                     result = (1..6).random()
                     GameState.updateGameState(result)
                 }),
@@ -125,7 +129,7 @@ class MainActivity : ComponentActivity() {
                     AdView(context).apply {
                         setAdSize(AdSize.BANNER)
 
-                        val adRequest = AdRequest.Builder().build();
+                        val adRequest = AdRequest.Builder().build()
                         val adUnitId = if (adRequest.isTestDevice(context)) TEST_BANNER_ID else adId
 
                         this.adUnitId = adUnitId
