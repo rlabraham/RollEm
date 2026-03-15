@@ -1,5 +1,6 @@
 package com.example.adroller
 
+import android.content.res.Configuration
 import android.media.MediaPlayer
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -20,6 +21,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
@@ -52,15 +55,31 @@ class MainActivity : ComponentActivity() {
     @Preview
     @Composable
     fun RollEmApp() {
-        Column(modifier = Modifier.fillMaxSize()) {
-            TopAd()
-            Box(
-                modifier = Modifier.weight(1f).fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                Dice()
+        val configuration = LocalConfiguration.current
+
+        val bgImage = if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
+                R.drawable.roll_em_background_portrait
+            else
+                R.drawable.roll_em_background_landscape
+
+
+        Box(modifier = Modifier.fillMaxSize()) {
+            Image(
+                painter = painterResource(bgImage),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+            Column(modifier = Modifier.fillMaxSize()) {
+                TopAd()
+                Box(
+                    modifier = Modifier.weight(1f).fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Dice()
+                }
+                BottomAd()
             }
-            BottomAd()
         }
     }
 
