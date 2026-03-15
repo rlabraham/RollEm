@@ -1,18 +1,21 @@
 package com.example.adroller.gamestate
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.setValue
+
 const val DEFAULT_ROLES_LEFT = 10
 
-
-class GameState {
+object GameState {
     var oddEvenGuess = OddEvenGuess.NONE
 
-    private var score = 0
-    private var rollsLeft = DEFAULT_ROLES_LEFT
-    private val streak = ArrayList<Int>()
+    var score by mutableIntStateOf(0)
+        private set
 
-    val getScore get() = score
-    val getRollsLeft get() = rollsLeft
-    val getStreak get() = streak
+    var rollsLeft by mutableIntStateOf(DEFAULT_ROLES_LEFT)
+        private set
+
+    private val streak = ArrayList<Int>()
 
     fun updateGameState(roll: Int = 0) {
         updateStreak(roll)

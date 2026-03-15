@@ -1,33 +1,33 @@
 package com.example.adroller
 
+import android.media.MediaPlayer
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.example.adroller.gamestate.GameState
-import com.example.adroller.ui.theme.DiceRollerTheme
+import com.example.adroller.ui.theme.RollEmTheme
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
@@ -38,37 +38,35 @@ const val TEST_BANNER_ID = "ca-app-pub-3940256099942544/6300978111"
 const val TOP_BANNER_ID = "ca-app-pub-2470800019467760/8597513307"
 
 class MainActivity : ComponentActivity() {
-    private val gameState = GameState()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         MobileAds.initialize(this)
         enableEdgeToEdge()
         setContent {
-            DiceRollerTheme {
-                DiceRollerApp()
+            RollEmTheme {
+                RollEmApp()
             }
         }
     }
 
     @Preview
     @Composable
-    fun DiceRollerApp() {
+    fun RollEmApp() {
         Column(modifier = Modifier.fillMaxSize()) {
             TopAd()
             Box(
                 modifier = Modifier.weight(1f).fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-                DiceWithButtonAndImage()
+                Dice()
             }
             BottomAd()
         }
     }
 
     @Composable
-    fun DiceWithButtonAndImage(modifier: Modifier = Modifier) {
-        var result by remember { mutableStateOf(1) }
+    fun Dice(modifier: Modifier = Modifier) {
+        var result by remember { mutableIntStateOf(1) }
 
         val imageResource = when (result) {
             1 -> R.drawable.dice_1
@@ -79,21 +77,22 @@ class MainActivity : ComponentActivity() {
             else -> R.drawable.dice_6
         }
 
+        val context = LocalContext.current
+        val mp = MediaPlayer.create(context, R.raw.dice_roll)
+
         Column(
-            modifier = modifier,
+            modifier = modifier
+                .clickable(onClick = {
+                    mp.start()
+                    result = (1..6).random()
+                    GameState.updateGameState(result)
+                }),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
                 painter = painterResource(imageResource),
-                contentDescription = result.toString()
+                contentDescription = result.toString(),
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = {
-                result = (1..6).random()
-                gameState.updateGameState(result)
-            }) {
-                Text(stringResource(R.string.roll))
-            }
         }
     }
 
