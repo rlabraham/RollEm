@@ -3,4 +3,5 @@
     <string name="roll">Roll</string>
     <string name="score">Score: %s</string>
     <string name="rolls_left">Rolls Left: %s</string>
+    <string name="current_streak">Current Streak: %s</string>
 </resources>
