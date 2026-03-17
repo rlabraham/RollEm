@@ -50,10 +50,6 @@ object GameState {
         }
 
         rollsLeft = rollsLeft + increment
-
-        if (rollsLeft <= 0) {
-            resetGameState()
-        }
     }
 
     private fun updateStreak(roll: Int = 0) {

@@ -10,15 +10,15 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -79,30 +79,27 @@ class MainActivity : ComponentActivity() {
                 contentScale = ContentScale.Crop
             )
             Column(modifier = Modifier.fillMaxSize()) {
-                TopAd()
-                Box(
+                BannerAd(TOP_BANNER_ID)
+                Row(
                     modifier = Modifier
-                        .weight(1f)
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    contentAlignment = Alignment.BottomCenter,
+                        .padding(top = 8.dp, bottom = 4.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                        verticalAlignment = Alignment.Bottom
-                    ) {
-                        ScoreDisplay()
-                        RollsLeftDisplay()
-                    }
+                    ScoreDisplay()
+                    RollsLeftDisplay()
                 }
+                StreakDisplay(
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
                 Box(
                     modifier = Modifier.weight(1f).fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
                     Dice()
                 }
-                BottomAd()
+                BannerAd(BOTTOM_BANNER_ID)
             }
         }
     }
@@ -169,42 +166,45 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun TopAd(modifier: Modifier = Modifier) {
-        Box(
-            modifier = modifier.fillMaxWidth().navigationBarsPadding(),
-            contentAlignment = Alignment.Center
-        ) {
-            BannerAd(TOP_BANNER_ID)
-        }
-    }
-
-    @Composable
-    fun BottomAd(modifier: Modifier = Modifier) {
-        Box(
-            modifier = modifier.fillMaxWidth().navigationBarsPadding(),
-            contentAlignment = Alignment.Center
-        ) {
-            BannerAd(BOTTOM_BANNER_ID)
+    fun StreakDisplay(modifier: Modifier = Modifier) {
+        if (!GameState.getStreak.isEmpty()) {
+            val streakAsCSV = GameState.getStreak.joinToString(", ")
+            Text(
+                modifier = modifier
+                    .border(2.dp, Color(0xFF8B4513))
+                    .background(Color.Black)
+                    .padding(6.dp, 2.dp),
+                color = Color.Yellow,
+                text = stringResource(R.string.current_streak, streakAsCSV)
+            )
         }
     }
 
     @Composable
     fun BannerAd(adId: String = "") {
-        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-            AndroidView(
-                modifier = Modifier.fillMaxWidth().height(50.dp),
-                factory = { context ->
-                    AdView(context).apply {
-                        setAdSize(AdSize.BANNER)
+        Box(
+            modifier = Modifier.fillMaxWidth().navigationBarsPadding(),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                AndroidView(
+                    modifier = Modifier.fillMaxWidth().height(50.dp),
+                    factory = { context ->
+                        AdView(context).apply {
+                            setAdSize(AdSize.BANNER)
 
-                        val adRequest = AdRequest.Builder().build()
-                        val adUnitId = if (adRequest.isTestDevice(context)) TEST_BANNER_ID else adId
+                            val adRequest = AdRequest.Builder().build()
+                            val adUnitId = if (adRequest.isTestDevice(context)) TEST_BANNER_ID else adId
 
-                        this.adUnitId = adUnitId
-                        loadAd(adRequest)
+                            this.adUnitId = adUnitId
+                            loadAd(adRequest)
+                        }
                     }
-                }
-            )
+                )
+            }
         }
     }
 }
