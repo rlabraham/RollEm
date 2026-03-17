@@ -6,5 +6,5 @@
   * A `1` always ends the streak
 * With each roll players ***may*** guess odd or even,
   * If they guess correctly they don't lose a roll
-  * If they guess incorrectly they lose two rolls instead
+  * If they guess incorrectly they lose two rolls (instead of one)
 * The game ends when all rolls are depleted

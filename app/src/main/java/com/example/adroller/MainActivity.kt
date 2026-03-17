@@ -19,6 +19,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,6 +41,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.example.adroller.gamestate.GameState
+import com.example.adroller.gamestate.OddEvenGuess
 import com.example.adroller.ui.theme.RollEmTheme
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -91,8 +95,11 @@ class MainActivity : ComponentActivity() {
                     RollsLeftDisplay()
                 }
                 StreakDisplay(
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(bottom = 8.dp)
                 )
+                OddEvenNoneSelector()
                 Box(
                     modifier = Modifier.weight(1f).fillMaxWidth(),
                     contentAlignment = Alignment.Center
@@ -177,6 +184,42 @@ class MainActivity : ComponentActivity() {
                 color = Color.Yellow,
                 text = stringResource(R.string.current_streak, streakAsCSV)
             )
+        }
+    }
+
+    @Composable
+    fun OddEvenNoneSelector(modifier: Modifier = Modifier) {
+        val options = OddEvenGuess.entries.toTypedArray()
+
+        Row(
+            modifier = modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            SingleChoiceSegmentedButtonRow {
+                options.forEachIndexed { index, option ->
+                    SegmentedButton(
+                        shape = SegmentedButtonDefaults.itemShape(
+                            index = index,
+                            count = options.size
+                        ),
+                        onClick = { GameState.oddEvenGuess = option },
+                        selected = option == GameState.oddEvenGuess,
+                        label = {
+                            Text(stringResource(option.resource))
+                        },
+                        colors = SegmentedButtonDefaults.colors(
+                            activeContainerColor =
+                                if (option == OddEvenGuess.ODD)
+                                    Color.Yellow
+                                else if (option == OddEvenGuess.EVEN)
+                                    Color.Green
+                                else
+                                    Color.Gray
+                        )
+                    )
+                }
+            }
         }
     }
 
