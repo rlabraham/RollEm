@@ -37,6 +37,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -51,6 +53,7 @@ import com.google.android.gms.ads.MobileAds
 const val BOTTOM_BANNER_ID = "ca-app-pub-2470800019467760/3164718645"
 const val TEST_BANNER_ID = "ca-app-pub-3940256099942544/6300978111"
 const val TOP_BANNER_ID = "ca-app-pub-2470800019467760/8597513307"
+private val CHALK_BOARD_FONT = FontFamily(Font(R.font.chalk_board))
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,21 +87,7 @@ class MainActivity : ComponentActivity() {
             )
             Column(modifier = Modifier.fillMaxSize()) {
                 BannerAd(TOP_BANNER_ID)
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp, bottom = 4.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    ScoreDisplay()
-                    RollsLeftDisplay()
-                }
-                StreakDisplay(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(bottom = 8.dp)
-                )
+                Hud()
                 OddEvenNoneSelector()
                 Box(
                     modifier = Modifier.weight(1f).fillMaxWidth(),
@@ -108,6 +97,23 @@ class MainActivity : ComponentActivity() {
                 }
                 BannerAd(BOTTOM_BANNER_ID)
             }
+        }
+    }
+
+    @Composable
+    fun Hud() {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(2.dp, Color(0xFF8B4513))
+                .background(Color.Black)
+                .padding(top = 8.dp, bottom = 4.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            ScoreDisplay()
+            RollsLeftDisplay()
+            StreakDisplay()
         }
     }
 
@@ -151,10 +157,8 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun ScoreDisplay(modifier: Modifier = Modifier) {
         Text(
-       modifier = modifier
-                .border(2.dp, Color(0xFF8B4513))
-                .background(Color.Black)
-                .padding(6.dp, 2.dp),
+            modifier = modifier,
+            fontFamily = CHALK_BOARD_FONT,
             color = Color.Green,
             text = stringResource(R.string.score, GameState.score),
         )
@@ -163,10 +167,8 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun RollsLeftDisplay(modifier: Modifier = Modifier) {
         Text(
-            modifier = modifier
-                .border(2.dp, Color(0xFF8B4513))
-                .background(Color.Black)
-                .padding(6.dp, 2.dp),
+            modifier = modifier,
+            fontFamily = CHALK_BOARD_FONT,
             color = Color.Red,
             text = stringResource(R.string.rolls_left, GameState.rollsLeft)
         )
@@ -177,11 +179,9 @@ class MainActivity : ComponentActivity() {
         if (!GameState.getStreak.isEmpty()) {
             val streakAsCSV = GameState.getStreak.joinToString(", ")
             Text(
-                modifier = modifier
-                    .border(2.dp, Color(0xFF8B4513))
-                    .background(Color.Black)
-                    .padding(6.dp, 2.dp),
+                modifier = modifier,
                 color = Color.Yellow,
+                fontFamily = CHALK_BOARD_FONT,
                 text = stringResource(R.string.current_streak, streakAsCSV)
             )
         }

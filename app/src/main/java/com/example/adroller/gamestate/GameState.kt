@@ -61,6 +61,7 @@ object GameState {
             streak.isEmpty() || last == 6 || last == roll -> streak.add(roll)
             else -> {
                 streak.clear()
+                streak.add(roll)
             }
         }
     }
