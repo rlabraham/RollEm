@@ -325,15 +325,15 @@ class MainActivity : ComponentActivity() {
                     text = """
 You start with 10 rolls
 
-With each roll you earn points equal to that roll
+Each roll you gain points equal to that roll
 
-If you roll the same value multiple times in a row they add the length of that streak to their score. This happens each time the streak is continued.
+Each time you roll the same value in a row, the length of the streak is added to your score.
   • A 6 always continues the streak
   • A 1 always ends the streak
 
 With each roll you may guess odd or even
-  • If they guess correctly they don't lose a roll
-  • If they guess incorrectly they lose two rolls (instead of one)
+  • If you guess correctly you don't lose a roll
+  • If you guess incorrectly you lose two rolls (instead of one)
 
 The game ends when all rolls are depleted
                     """.trimIndent()
