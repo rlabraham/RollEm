@@ -19,13 +19,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -39,6 +42,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -87,6 +92,7 @@ class MainActivity : ComponentActivity() {
             )
             Column(modifier = Modifier.fillMaxSize()) {
                 BannerAd(TOP_BANNER_ID)
+                HelperOptions()
                 Hud()
                 OddEvenNoneSelector()
                 Box(
@@ -97,6 +103,43 @@ class MainActivity : ComponentActivity() {
                 }
                 BannerAd(BOTTOM_BANNER_ID)
             }
+        }
+    }
+
+    @Composable
+    fun HelperOptions(){
+        var showRulesDialog by remember { mutableStateOf(false) }
+        val textColor = 0xFF2196F3
+
+        if (showRulesDialog) {
+            RulesDialog(onDismiss = { showRulesDialog = false })
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+        ) {
+            Text(
+                text = stringResource(R.string.how_to_play),
+                textDecoration = TextDecoration.Underline,
+                color = Color(textColor),
+                modifier = Modifier.clickable {
+                    showRulesDialog = true
+                }
+            )
+            Text(
+                text = stringResource(R.string.high_scores),
+                textDecoration = TextDecoration.Underline,
+                color = Color(textColor)
+            )
+            Text(
+                text = stringResource(R.string.reset),
+                textDecoration = TextDecoration.Underline,
+                color = Color(textColor),
+                modifier = Modifier.clickable{
+                    resetGame()
+                }
+            )
         }
     }
 
@@ -143,6 +186,9 @@ class MainActivity : ComponentActivity() {
                     mp?.start()
                     result = (1..6).random()
                     GameState.updateGameState(result)
+                    if (GameState.rollsLeft <= 0) {
+                        resetGame()
+                    }
                 }),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -203,7 +249,9 @@ class MainActivity : ComponentActivity() {
                             index = index,
                             count = options.size
                         ),
-                        onClick = { GameState.oddEvenGuess = option },
+                        onClick = {
+                            GameState.oddEvenGuess = if (GameState.oddEvenGuess == option) null else option
+                        },
                         selected = option == GameState.oddEvenGuess,
                         label = {
                             Text(stringResource(option.resource))
@@ -211,11 +259,9 @@ class MainActivity : ComponentActivity() {
                         colors = SegmentedButtonDefaults.colors(
                             activeContainerColor =
                                 if (option == OddEvenGuess.ODD)
-                                    Color.Yellow
-                                else if (option == OddEvenGuess.EVEN)
-                                    Color.Green
+                                    Color.Red
                                 else
-                                    Color.Gray
+                                    Color.Green
                         )
                     )
                 }
@@ -249,5 +295,46 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
+    }
+
+    @Composable
+    fun RulesDialog(onDismiss: () -> Unit) {
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            title = {
+                Text(
+                    text = stringResource(R.string.game_rules),
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Text(
+                    text = """
+You start with 10 rolls
+
+With each roll you earn points equal to that roll
+
+If you roll the same value multiple times in a row they add the length of that streak to their score. This happens each time the streak is continued.
+  • A 6 always continues the streak
+  • A 1 always ends the streak
+
+With each roll you may guess odd or even
+  • If they guess correctly they don't lose a roll
+  • If they guess incorrectly they lose two rolls (instead of one)
+
+The game ends when all rolls are depleted
+                    """.trimIndent()
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = onDismiss) {
+                    Text("Close")
+                }
+            }
+        )
+    }
+
+    private fun resetGame() {
+        GameState.resetGameState()
     }
 }

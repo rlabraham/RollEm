@@ -12,7 +12,7 @@ const val DEFAULT_ROLES_LEFT = 10
 object GameState {
     private val streak: SnapshotStateList<Int> = mutableStateListOf()
 
-    var oddEvenGuess by mutableStateOf(OddEvenGuess.NONE)
+    var oddEvenGuess by mutableStateOf<OddEvenGuess?>(null)
 
     var score by mutableIntStateOf(0)
         private set
@@ -31,7 +31,7 @@ object GameState {
     fun resetGameState() {
         score = 0
         rollsLeft = DEFAULT_ROLES_LEFT
-        oddEvenGuess = OddEvenGuess.NONE
+        oddEvenGuess = null
         streak.clear()
     }
 
@@ -43,7 +43,7 @@ object GameState {
     private fun updateRollsLeft(roll: Int = 0) {
         var increment = -1
 
-        if (oddEvenGuess != OddEvenGuess.NONE) {
+        if (oddEvenGuess != null) {
             val rollIsEven = roll % 2 == 0
             val correctGuess = (rollIsEven && oddEvenGuess == OddEvenGuess.EVEN) || (!rollIsEven && oddEvenGuess == OddEvenGuess.ODD)
 
