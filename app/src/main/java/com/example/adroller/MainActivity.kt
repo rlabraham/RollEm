@@ -1,5 +1,6 @@
 package com.example.adroller
 
+import android.content.Context
 import android.content.res.Configuration
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -53,17 +54,29 @@ import com.example.adroller.ui.theme.RollEmTheme
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.AdError
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 
 const val BOTTOM_BANNER_ID = "ca-app-pub-2470800019467760/3164718645"
 const val TEST_BANNER_ID = "ca-app-pub-3940256099942544/6300978111"
 const val TOP_BANNER_ID = "ca-app-pub-2470800019467760/8597513307"
+
+const val RESET_AD_ID = "ca-app-pub-2470800019467760/7973716834"
+const val RESET_AD_TEST_ID = "ca-app-pub-3940256099942544/1033173712"
+
 private val CHALK_BOARD_FONT = FontFamily(Font(R.font.chalk_board))
 
 class MainActivity : ComponentActivity() {
+    private var interstitialAd: InterstitialAd? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         MobileAds.initialize(this)
+        loadInterstitialAd(this)
         enableEdgeToEdge()
         setContent {
             RollEmTheme {
@@ -335,6 +348,46 @@ The game ends when all rolls are depleted
     }
 
     private fun resetGame() {
+        if (interstitialAd != null) {
+            interstitialAd?.show(this)
+        } else {
+            loadInterstitialAd(this)
+        }
         GameState.resetGameState()
+    }
+
+    private fun loadInterstitialAd(context: Context) {
+        val adRequest = AdRequest.Builder().build()
+        val adUnitId = if (adRequest.isTestDevice(context)) RESET_AD_TEST_ID else RESET_AD_ID
+
+        InterstitialAd.load(
+            context,
+            adUnitId,
+            adRequest,
+            object : InterstitialAdLoadCallback() {
+                override fun onAdLoaded(ad: InterstitialAd) {
+                    ad.fullScreenContentCallback = object : FullScreenContentCallback() {
+                        override fun onAdShowedFullScreenContent() {
+                            interstitialAd = null
+                        }
+
+                        override fun onAdDismissedFullScreenContent() {
+                            interstitialAd = null
+                            loadInterstitialAd(this@MainActivity)
+                        }
+
+                        override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                            interstitialAd = null
+                            loadInterstitialAd(this@MainActivity)
+                        }
+                    }
+                    interstitialAd = ad
+                }
+
+                override fun onAdFailedToLoad(adError: LoadAdError) {
+                    interstitialAd = null
+                }
+            },
+        )
     }
 }
