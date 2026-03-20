@@ -9,6 +9,7 @@ lifecycleRuntimeKtx = "2.10.0"
 activityCompose = "1.12.4"
 composeBom = "2024.09.00"
 playServicesAds = "25.0.0"
+playServicesGamesV2 = "21.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -26,6 +27,7 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "playServicesAds" }
+play-services-games = { module = "com.google.android.gms:play-services-games-v2", version.ref = "playServicesGamesV2" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

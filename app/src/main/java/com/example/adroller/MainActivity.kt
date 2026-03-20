@@ -60,6 +60,8 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.google.android.gms.games.PlayGames
+import com.google.android.gms.games.PlayGamesSdk
 
 const val BOTTOM_BANNER_ID = "ca-app-pub-2470800019467760/3164718645"
 const val TEST_BANNER_ID = "ca-app-pub-3940256099942544/6300978111"
@@ -75,8 +77,12 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         MobileAds.initialize(this)
         loadInterstitialAd(this)
+
+        PlayGamesSdk.initialize(this);
+
         enableEdgeToEdge()
         setContent {
             RollEmTheme {
@@ -389,5 +395,13 @@ The game ends when all rolls are depleted
                 }
             },
         )
+    }
+
+    private fun showLeaderboard() {
+        PlayGames.getLeaderboardsClient(this)
+            .getLeaderboardIntent(getString(R.string.leaderboard_id))
+            .addOnSuccessListener { intent ->
+                startActivity(intent)
+            }
     }
 }

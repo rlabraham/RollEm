@@ -4,11 +4,17 @@
     <string name="score">Score: %s</string>
     <string name="rolls_left">Rolls Left: %s</string>
     <string name="current_streak">Current Streak: %s</string>
+
     <string name="odd">Odd</string>
     <string name="even">Even</string>
     <string name="none">None</string>
+
     <string name="how_to_play">How to Play</string>
     <string name="high_scores">High Scores</string>
     <string name="reset">Reset</string>
     <string name="game_rules">Game Rules</string>
+    <string name="sign_in">Sign In</string>
+
+    <string name="game_services_project_id">138874105102</string>
+    <string name="leaderboard_id">CgkIjtqqrIUEEAIQAA</string>
 </resources>
