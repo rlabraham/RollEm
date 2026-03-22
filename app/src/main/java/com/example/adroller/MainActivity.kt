@@ -1,6 +1,5 @@
 package com.example.adroller
 
-import android.content.Context
 import android.content.res.Configuration
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -17,8 +16,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.SegmentedButton
@@ -47,40 +44,25 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
+import com.example.adroller.admob.Ads
+import com.example.adroller.admob.Ads.BannerAd
+import com.example.adroller.admob.BOTTOM_BANNER_ID
+import com.example.adroller.admob.TOP_BANNER_ID
 import com.example.adroller.gamestate.GameState
 import com.example.adroller.gamestate.OddEvenGuess
 import com.example.adroller.ui.theme.RollEmTheme
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.AdError
-import com.google.android.gms.ads.FullScreenContentCallback
-import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.interstitial.InterstitialAd
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.games.PlayGames
 import com.google.android.gms.games.PlayGamesSdk
-
-const val BOTTOM_BANNER_ID = "ca-app-pub-2470800019467760/3164718645"
-const val TEST_BANNER_ID = "ca-app-pub-3940256099942544/6300978111"
-const val TOP_BANNER_ID = "ca-app-pub-2470800019467760/8597513307"
-
-const val RESET_AD_ID = "ca-app-pub-2470800019467760/7973716834"
-const val RESET_AD_TEST_ID = "ca-app-pub-3940256099942544/1033173712"
 
 private val CHALK_BOARD_FONT = FontFamily(Font(R.font.chalk_board))
 
 class MainActivity : ComponentActivity() {
-    private var interstitialAd: InterstitialAd? = null
+    private var isAuthenticated by mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        MobileAds.initialize(this)
-        loadInterstitialAd(this)
-
+        Ads.init(this)
         PlayGamesSdk.initialize(this);
 
         enableEdgeToEdge()
@@ -159,6 +141,22 @@ class MainActivity : ComponentActivity() {
                     resetGame()
                 }
             )
+            if (isAuthenticated){
+                Text(
+                    text = stringResource(R.string.high_scores),
+                    textDecoration = TextDecoration.Underline,
+                    color = Color(textColor),
+                    modifier = Modifier.clickable{
+                        showLeaderboard()
+                    }
+                )
+            } else {
+                Text(
+                    text = stringResource(R.string.sign_in),
+                    textDecoration = TextDecoration.Underline,
+                    color = Color(textColor),
+                )
+            }
         }
     }
 
@@ -289,34 +287,6 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun BannerAd(adId: String = "") {
-        Box(
-            modifier = Modifier.fillMaxWidth().navigationBarsPadding(),
-            contentAlignment = Alignment.Center
-        ) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                AndroidView(
-                    modifier = Modifier.fillMaxWidth().height(50.dp),
-                    factory = { context ->
-                        AdView(context).apply {
-                            setAdSize(AdSize.BANNER)
-
-                            val adRequest = AdRequest.Builder().build()
-                            val adUnitId = if (adRequest.isTestDevice(context)) TEST_BANNER_ID else adId
-
-                            this.adUnitId = adUnitId
-                            loadAd(adRequest)
-                        }
-                    }
-                )
-            }
-        }
-    }
-
-    @Composable
     fun RulesDialog(onDismiss: () -> Unit) {
         AlertDialog(
             onDismissRequest = onDismiss,
@@ -354,47 +324,12 @@ The game ends when all rolls are depleted
     }
 
     private fun resetGame() {
-        if (interstitialAd != null) {
-            interstitialAd?.show(this)
+        if (Ads.interstitialAd != null) {
+            Ads.interstitialAd?.show(this)
         } else {
-            loadInterstitialAd(this)
+            Ads.loadInterstitialAd(this)
         }
         GameState.resetGameState()
-    }
-
-    private fun loadInterstitialAd(context: Context) {
-        val adRequest = AdRequest.Builder().build()
-        val adUnitId = if (adRequest.isTestDevice(context)) RESET_AD_TEST_ID else RESET_AD_ID
-
-        InterstitialAd.load(
-            context,
-            adUnitId,
-            adRequest,
-            object : InterstitialAdLoadCallback() {
-                override fun onAdLoaded(ad: InterstitialAd) {
-                    ad.fullScreenContentCallback = object : FullScreenContentCallback() {
-                        override fun onAdShowedFullScreenContent() {
-                            interstitialAd = null
-                        }
-
-                        override fun onAdDismissedFullScreenContent() {
-                            interstitialAd = null
-                            loadInterstitialAd(this@MainActivity)
-                        }
-
-                        override fun onAdFailedToShowFullScreenContent(adError: AdError) {
-                            interstitialAd = null
-                            loadInterstitialAd(this@MainActivity)
-                        }
-                    }
-                    interstitialAd = ad
-                }
-
-                override fun onAdFailedToLoad(adError: LoadAdError) {
-                    interstitialAd = null
-                }
-            },
-        )
     }
 
     private fun showLeaderboard() {
