@@ -1,4 +1,4 @@
-package com.example.adroller
+package com.example.rollem
 
 import android.content.res.Configuration
 import android.media.MediaPlayer
@@ -44,13 +44,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.adroller.admob.Ads
-import com.example.adroller.admob.Ads.BannerAd
-import com.example.adroller.admob.BOTTOM_BANNER_ID
-import com.example.adroller.admob.TOP_BANNER_ID
-import com.example.adroller.gamestate.GameState
-import com.example.adroller.gamestate.OddEvenGuess
-import com.example.adroller.ui.theme.RollEmTheme
+import com.example.rollem.admob.Ads
+import com.example.rollem.admob.Ads.BannerAd
+import com.example.rollem.admob.BOTTOM_BANNER_ID
+import com.example.rollem.admob.TOP_BANNER_ID
+import com.example.rollem.gamestate.GameState
+import com.example.rollem.gamestate.OddEvenGuess
+import com.example.rollem.ui.theme.RollEmTheme
 import com.google.android.gms.games.PlayGames
 import com.google.android.gms.games.PlayGamesSdk
 

@@ -1,4 +1,4 @@
-package com.example.adroller.ui.theme
+package com.example.rollem.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

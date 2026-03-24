@@ -1,4 +1,4 @@
-package com.example.adroller.ui.theme
+package com.example.rollem.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

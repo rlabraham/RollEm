@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.adroller"
+    namespace = "com.example.rollem"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.adroller"
+        applicationId = "com.example.rollem"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
