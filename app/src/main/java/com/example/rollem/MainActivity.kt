@@ -63,7 +63,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         Ads.init(this)
-        PlayGamesSdk.initialize(this);
+        PlayGamesSdk.initialize(this)
 
         enableEdgeToEdge()
         setContent {
@@ -204,6 +204,7 @@ class MainActivity : ComponentActivity() {
                     result = (1..6).random()
                     GameState.updateGameState(result)
                     if (GameState.rollsLeft <= 0) {
+                        submitScore(GameState.score)
                         resetGame()
                     }
                 }),
@@ -338,5 +339,12 @@ The game ends when all rolls are depleted
             .addOnSuccessListener { intent ->
                 startActivity(intent)
             }
+    }
+
+    private fun submitScore(score: Long) {
+        PlayGames.getLeaderboardsClient(this).submitScore(
+            getString(R.string.leaderboard_id),
+            score
+        )
     }
 }

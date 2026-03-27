@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Ad Roller"
+rootProject.name = "Roll Em"
 include(":app")
  
