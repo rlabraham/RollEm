@@ -3,6 +3,7 @@ package com.example.rollem
 import android.content.res.Configuration
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -54,6 +55,7 @@ import com.example.rollem.ui.theme.RollEmTheme
 import com.google.android.gms.games.PlayGames
 import com.google.android.gms.games.PlayGamesSdk
 
+
 private val CHALK_BOARD_FONT = FontFamily(Font(R.font.chalk_board))
 
 class MainActivity : ComponentActivity() {
@@ -97,7 +99,9 @@ class MainActivity : ComponentActivity() {
                 Hud()
                 OddEvenNoneSelector()
                 Box(
-                    modifier = Modifier.weight(1f).fillMaxWidth(),
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
                     Dice()
@@ -129,11 +133,6 @@ class MainActivity : ComponentActivity() {
                 }
             )
             Text(
-                text = stringResource(R.string.high_scores),
-                textDecoration = TextDecoration.Underline,
-                color = Color(textColor)
-            )
-            Text(
                 text = stringResource(R.string.reset),
                 textDecoration = TextDecoration.Underline,
                 color = Color(textColor),
@@ -155,6 +154,9 @@ class MainActivity : ComponentActivity() {
                     text = stringResource(R.string.sign_in),
                     textDecoration = TextDecoration.Underline,
                     color = Color(textColor),
+                    modifier = Modifier.clickable {
+                        signIn()
+                    }
                 )
             }
         }
@@ -346,5 +348,31 @@ The game ends when all rolls are depleted
             getString(R.string.leaderboard_id),
             score
         )
+    }
+
+    private fun signIn() {
+        val gamesSignInClient = PlayGames.getGamesSignInClient(this)
+
+        gamesSignInClient.isAuthenticated()
+            .addOnCompleteListener { authTask ->
+                val authenticatedNow = authTask.isSuccessful && authTask.result?.isAuthenticated == true
+
+                if (authenticatedNow) {
+                    isAuthenticated = true
+                    Toast.makeText(this, getString(R.string.playgames_signin_success), Toast.LENGTH_SHORT).show()
+                } else {
+                    gamesSignInClient.signIn().addOnCompleteListener { signInTask ->
+                        val signInSucceeded = signInTask.isSuccessful && signInTask.result?.isAuthenticated == true
+                        isAuthenticated = signInSucceeded
+
+                        val message = if (signInSucceeded) {
+                            getString(R.string.playgames_signin_success)
+                        } else {
+                            getString(R.string.playgames_signin_fail)
+                        }
+                        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
     }
 }

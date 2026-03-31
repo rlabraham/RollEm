@@ -17,4 +17,7 @@
 
     <string name="game_services_project_id">138874105102</string>
     <string name="leaderboard_id">CgkIjtqqrIUEEAIQAA</string>
+
+    <string name="playgames_signin_success">Signed in to Play Games</string>
+    <string name="playgames_signin_fail">Play Games sign-in failed</string>
 </resources>
