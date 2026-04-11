@@ -1,6 +1,6 @@
-package com.example.rollem.gamestate
+package com.rltech.rollem.gamestate
 
-import com.example.rollem.R
+import com.rltech.rollem.R
 
 enum class OddEvenGuess (val resource: Int) {
     ODD(R.string.odd),

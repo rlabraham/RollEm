@@ -1,4 +1,4 @@
-package com.example.rollem.ui.theme
+package com.rltech.rollem.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

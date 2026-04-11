@@ -1,4 +1,4 @@
-package com.example.rollem.admob
+package com.rltech.rollem.admob
 
 import android.content.Context
 import androidx.compose.foundation.layout.Box

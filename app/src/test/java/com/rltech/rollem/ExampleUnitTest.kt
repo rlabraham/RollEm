@@ -1,4 +1,4 @@
-package com.example.rollem
+package com.rltech.rollem
 
 import org.junit.Test
 

@@ -1,4 +1,4 @@
-package com.example.rollem.gamestate
+package com.rltech.rollem.gamestate
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf

@@ -1,4 +1,4 @@
-package com.example.rollem
+package com.rltech.rollem
 
 import android.content.res.Configuration
 import android.media.MediaPlayer
@@ -45,13 +45,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.rollem.admob.Ads
-import com.example.rollem.admob.Ads.BannerAd
-import com.example.rollem.admob.BOTTOM_BANNER_ID
-import com.example.rollem.admob.TOP_BANNER_ID
-import com.example.rollem.gamestate.GameState
-import com.example.rollem.gamestate.OddEvenGuess
-import com.example.rollem.ui.theme.RollEmTheme
+import com.rltech.rollem.admob.Ads
+import com.rltech.rollem.admob.Ads.BannerAd
+import com.rltech.rollem.admob.BOTTOM_BANNER_ID
+import com.rltech.rollem.admob.TOP_BANNER_ID
+import com.rltech.rollem.gamestate.GameState
+import com.rltech.rollem.gamestate.OddEvenGuess
+import com.rltech.rollem.ui.theme.RollEmTheme
 import com.google.android.gms.games.PlayGames
 import com.google.android.gms.games.PlayGamesSdk
 

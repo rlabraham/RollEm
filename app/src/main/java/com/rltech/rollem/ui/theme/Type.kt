@@ -1,4 +1,4 @@
-package com.example.rollem.ui.theme
+package com.rltech.rollem.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
