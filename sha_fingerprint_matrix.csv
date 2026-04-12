@@ -1,0 +1,7 @@
+Use Case,Build Users Run,Cert SHA To Register,Where To Register
+Local dev on emulator/USB (debug),APK signed by debug.keystore,Debug SHA-1 and SHA-256,"Google Cloud OAuth Android client; Play Games linked app (for debug); Firebase project settings (if needed)"
+Internal testing via Play (AAB uploaded),Play-distributed app signed by Google,App signing SHA-1 and SHA-256,"Google Cloud OAuth; Play Games Services config; Firebase"
+Uploading AAB to Play,Locally signed upload artifact,Upload SHA-1 and SHA-256,"Play Console app integrity/signing records; only API configs that explicitly use upload cert"
+Direct sideload release APK (outside Play),APK signed with your release keystore,Release keystore SHA-1 and SHA-256,"Google Cloud OAuth; Firebase for sideloaded variant"
+AdMob banner/interstitial serving,Any,Not SHA-based,"AdMob app ID and ad unit IDs (no OAuth SHA mapping)"
+

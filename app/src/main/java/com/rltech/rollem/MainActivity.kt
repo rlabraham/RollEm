@@ -3,6 +3,7 @@ package com.rltech.rollem
 import android.content.res.Configuration
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -116,8 +117,8 @@ class MainActivity : ComponentActivity() {
         var showRulesDialog by remember { mutableStateOf(false) }
         val textColor = 0xFF2196F3
 
-        if (showRulesDialog) {            RulesDialog(onDismiss = { showRulesDialog = false })
-
+        if (showRulesDialog) {
+            RulesDialog(onDismiss = { showRulesDialog = false })
         }
 
         Row(
@@ -340,6 +341,9 @@ The game ends when all rolls are depleted
             .getLeaderboardIntent(getString(R.string.leaderboard_id))
             .addOnSuccessListener { intent ->
                 startActivity(intent)
+            }
+            .addOnFailureListener { error ->
+                Log.e("Leaderboards", "Failed to open leaderboard", error)
             }
     }
 
