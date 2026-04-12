@@ -116,8 +116,8 @@ class MainActivity : ComponentActivity() {
         var showRulesDialog by remember { mutableStateOf(false) }
         val textColor = 0xFF2196F3
 
-        if (showRulesDialog) {
-            RulesDialog(onDismiss = { showRulesDialog = false })
+        if (showRulesDialog) {            RulesDialog(onDismiss = { showRulesDialog = false })
+
         }
 
         Row(
