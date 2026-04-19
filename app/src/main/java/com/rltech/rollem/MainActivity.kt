@@ -56,12 +56,12 @@ import com.rltech.rollem.gamestate.OddEvenGuess
 import com.rltech.rollem.ui.theme.RollEmTheme
 import com.google.android.gms.games.PlayGames
 import com.google.android.gms.games.PlayGamesSdk
+import com.rltech.rollem.googleplay.Authentication
 
 
 private val CHALK_BOARD_FONT = FontFamily(Font(R.font.chalk_board))
 
 class MainActivity : ComponentActivity() {
-    private var isAuthenticated by mutableStateOf(false)
     private val leaderboardLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -73,7 +73,7 @@ class MainActivity : ComponentActivity() {
 
         Ads.init(this)
         PlayGamesSdk.initialize(this)
-        refreshAuthenticationStatus()
+        Authentication.refreshAuthenticationStatus(this)
 
         enableEdgeToEdge()
         setContent {
@@ -148,7 +148,7 @@ class MainActivity : ComponentActivity() {
                     GameState.resetGameState()
                 }
             )
-            if (isAuthenticated){
+            if (Authentication.isAuthenticated){
                 Text(
                     text = stringResource(R.string.high_scores),
                     textDecoration = TextDecoration.Underline,
@@ -163,7 +163,7 @@ class MainActivity : ComponentActivity() {
                     textDecoration = TextDecoration.Underline,
                     color = Color(textColor),
                     modifier = Modifier.clickable {
-                        signIn()
+                        Authentication.signIn(this@MainActivity)
                     }
                 )
             }
@@ -344,9 +344,9 @@ The game ends when all rolls are depleted
     }
 
     private fun showLeaderboard() {
-        refreshAuthenticationStatus { authenticated ->
+        Authentication.refreshAuthenticationStatus(this) { authenticated ->
             if (!authenticated) {
-                signIn()
+                Authentication.signIn(this)
                 return@refreshAuthenticationStatus
             }
 
@@ -366,38 +366,5 @@ The game ends when all rolls are depleted
             getString(R.string.leaderboard_id),
             score
         )
-    }
-
-    private fun refreshAuthenticationStatus(onComplete: ((Boolean) -> Unit)? = null) {
-        PlayGames.getGamesSignInClient(this)
-            .isAuthenticated()
-            .addOnCompleteListener { authTask ->
-                val authenticatedNow = authTask.isSuccessful && authTask.result?.isAuthenticated == true
-                isAuthenticated = authenticatedNow
-                onComplete?.invoke(authenticatedNow)
-            }
-    }
-
-    private fun signIn() {
-        val gamesSignInClient = PlayGames.getGamesSignInClient(this)
-
-        refreshAuthenticationStatus { authenticatedNow ->
-                if (authenticatedNow) {
-                    isAuthenticated = true
-                    Toast.makeText(this, getString(R.string.playgames_signin_success), Toast.LENGTH_SHORT).show()
-                } else {
-                    gamesSignInClient.signIn().addOnCompleteListener { signInTask ->
-                        val signInSucceeded = signInTask.isSuccessful && signInTask.result?.isAuthenticated == true
-                        isAuthenticated = signInSucceeded
-
-                        val message = if (signInSucceeded) {
-                            getString(R.string.playgames_signin_success)
-                        } else {
-                            getString(R.string.playgames_signin_fail)
-                        }
-                        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
     }
 }
