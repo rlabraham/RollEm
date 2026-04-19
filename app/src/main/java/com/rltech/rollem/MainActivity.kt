@@ -4,11 +4,10 @@ import android.content.res.Configuration
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -47,16 +46,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.android.gms.games.PlayGamesSdk
 import com.rltech.rollem.admob.Ads
 import com.rltech.rollem.admob.Ads.BannerAd
 import com.rltech.rollem.admob.BOTTOM_BANNER_ID
 import com.rltech.rollem.admob.TOP_BANNER_ID
 import com.rltech.rollem.gamestate.GameState
 import com.rltech.rollem.gamestate.OddEvenGuess
-import com.rltech.rollem.ui.theme.RollEmTheme
-import com.google.android.gms.games.PlayGames
-import com.google.android.gms.games.PlayGamesSdk
 import com.rltech.rollem.googleplay.Authentication
+import com.rltech.rollem.googleplay.LeaderBoard
+import com.rltech.rollem.ui.theme.RollEmTheme
 
 
 private val CHALK_BOARD_FONT = FontFamily(Font(R.font.chalk_board))
@@ -154,7 +153,7 @@ class MainActivity : ComponentActivity() {
                     textDecoration = TextDecoration.Underline,
                     color = Color(textColor),
                     modifier = Modifier.clickable{
-                        showLeaderboard()
+                        LeaderBoard.showLeaderboard(leaderboardLauncher, this@MainActivity)
                     }
                 )
             } else {
@@ -214,7 +213,7 @@ class MainActivity : ComponentActivity() {
                     result = (1..6).random()
                     GameState.updateGameState(result)
                     if (GameState.rollsLeft <= 0) {
-                        submitScore(GameState.score)
+                        LeaderBoard.submitScore(GameState.score, this@MainActivity)
                         resetGame()
                     }
                 }),
@@ -341,30 +340,5 @@ The game ends when all rolls are depleted
             Ads.loadInterstitialAd(this)
         }
         GameState.resetGameState()
-    }
-
-    private fun showLeaderboard() {
-        Authentication.refreshAuthenticationStatus(this) { authenticated ->
-            if (!authenticated) {
-                Authentication.signIn(this)
-                return@refreshAuthenticationStatus
-            }
-
-            PlayGames.getLeaderboardsClient(this)
-                .getLeaderboardIntent(getString(R.string.leaderboard_id))
-                .addOnSuccessListener { intent ->
-                    leaderboardLauncher.launch(intent)
-                }
-                .addOnFailureListener { error ->
-                    Log.e("Leaderboards", "Failed to open leaderboard", error)
-                    Toast.makeText(this, getString(R.string.playgames_signin_fail), Toast.LENGTH_SHORT).show()
-                }
-        }
-    }
-    private fun submitScore(score: Long) {
-        PlayGames.getLeaderboardsClient(this).submitScore(
-            getString(R.string.leaderboard_id),
-            score
-        )
     }
 }
