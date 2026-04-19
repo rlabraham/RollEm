@@ -5,6 +5,7 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -61,12 +62,18 @@ private val CHALK_BOARD_FONT = FontFamily(Font(R.font.chalk_board))
 
 class MainActivity : ComponentActivity() {
     private var isAuthenticated by mutableStateOf(false)
+    private val leaderboardLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        Log.d("Leaderboards", "Leaderboard closed with resultCode=${result.resultCode}")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         Ads.init(this)
         PlayGamesSdk.initialize(this)
+        refreshAuthenticationStatus()
 
         enableEdgeToEdge()
         setContent {
@@ -138,7 +145,7 @@ class MainActivity : ComponentActivity() {
                 textDecoration = TextDecoration.Underline,
                 color = Color(textColor),
                 modifier = Modifier.clickable{
-                    resetGame()
+                    GameState.resetGameState()
                 }
             )
             if (isAuthenticated){
@@ -337,16 +344,23 @@ The game ends when all rolls are depleted
     }
 
     private fun showLeaderboard() {
-        PlayGames.getLeaderboardsClient(this)
-            .getLeaderboardIntent(getString(R.string.leaderboard_id))
-            .addOnSuccessListener { intent ->
-                startActivity(intent)
+        refreshAuthenticationStatus { authenticated ->
+            if (!authenticated) {
+                signIn()
+                return@refreshAuthenticationStatus
             }
-            .addOnFailureListener { error ->
-                Log.e("Leaderboards", "Failed to open leaderboard", error)
-            }
-    }
 
+            PlayGames.getLeaderboardsClient(this)
+                .getLeaderboardIntent(getString(R.string.leaderboard_id))
+                .addOnSuccessListener { intent ->
+                    leaderboardLauncher.launch(intent)
+                }
+                .addOnFailureListener { error ->
+                    Log.e("Leaderboards", "Failed to open leaderboard", error)
+                    Toast.makeText(this, getString(R.string.playgames_signin_fail), Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
     private fun submitScore(score: Long) {
         PlayGames.getLeaderboardsClient(this).submitScore(
             getString(R.string.leaderboard_id),
@@ -354,13 +368,20 @@ The game ends when all rolls are depleted
         )
     }
 
+    private fun refreshAuthenticationStatus(onComplete: ((Boolean) -> Unit)? = null) {
+        PlayGames.getGamesSignInClient(this)
+            .isAuthenticated()
+            .addOnCompleteListener { authTask ->
+                val authenticatedNow = authTask.isSuccessful && authTask.result?.isAuthenticated == true
+                isAuthenticated = authenticatedNow
+                onComplete?.invoke(authenticatedNow)
+            }
+    }
+
     private fun signIn() {
         val gamesSignInClient = PlayGames.getGamesSignInClient(this)
 
-        gamesSignInClient.isAuthenticated()
-            .addOnCompleteListener { authTask ->
-                val authenticatedNow = authTask.isSuccessful && authTask.result?.isAuthenticated == true
-
+        refreshAuthenticationStatus { authenticatedNow ->
                 if (authenticatedNow) {
                     isAuthenticated = true
                     Toast.makeText(this, getString(R.string.playgames_signin_success), Toast.LENGTH_SHORT).show()
