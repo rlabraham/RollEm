@@ -28,6 +28,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -86,6 +87,8 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun RollEmApp() {
         val configuration = LocalConfiguration.current
+        var showGameOverDialog by remember { mutableStateOf(false) }
+        var finalScore by remember { mutableLongStateOf(0L) }
 
         val bgImage = if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
                 R.drawable.roll_em_background_portrait
@@ -111,9 +114,25 @@ class MainActivity : ComponentActivity() {
                         .fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Dice()
+                    Dice(
+                        onGameOver = { score ->
+                            finalScore = score
+                            showGameOverDialog = true
+                        }
+                    )
                 }
                 BannerAd(BOTTOM_BANNER_ID)
+            }
+
+            if (showGameOverDialog) {
+                GameOverDialog(
+                    finalScore = finalScore,
+                    onClose = {
+                        LeaderBoard.submitScore(finalScore, this@MainActivity)
+                        resetGame()
+                        showGameOverDialog = false
+                    }
+                )
             }
         }
     }
@@ -187,7 +206,10 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun Dice(modifier: Modifier = Modifier) {
+    fun Dice(
+        modifier: Modifier = Modifier,
+        onGameOver: (Long) -> Unit
+    ) {
         var result by remember { mutableIntStateOf(1) }
 
         val imageResource = when (result) {
@@ -213,8 +235,7 @@ class MainActivity : ComponentActivity() {
                     result = (1..6).random()
                     GameState.updateGameState(result)
                     if (GameState.rollsLeft <= 0) {
-                        LeaderBoard.submitScore(GameState.score, this@MainActivity)
-                        resetGame()
+                        onGameOver(GameState.score)
                     }
                 }),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -224,6 +245,27 @@ class MainActivity : ComponentActivity() {
                 contentDescription = result.toString(),
             )
         }
+    }
+
+    @Composable
+    fun GameOverDialog(finalScore: Long, onClose: () -> Unit) {
+        AlertDialog(
+            onDismissRequest = onClose,
+            title = {
+                Text(
+                    text = stringResource(R.string.game_over),
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Text(text = stringResource(R.string.final_score, finalScore))
+            },
+            confirmButton = {
+                TextButton(onClick = onClose) {
+                    Text(stringResource(R.string.submit_score))
+                }
+            }
+        )
     }
 
 
@@ -308,21 +350,7 @@ class MainActivity : ComponentActivity() {
             },
             text = {
                 Text(
-                    text = """
-You start with 10 rolls
-
-Each roll you gain points equal to that roll
-
-Each time you roll the same value in a row, the length of the streak is added to your score.
-  • A 6 always continues the streak
-  • A 1 always ends the streak
-
-With each roll you may guess odd or even
-  • If you guess correctly you don't lose a roll
-  • If you guess incorrectly you lose two rolls (instead of one)
-
-The game ends when all rolls are depleted
-                    """.trimIndent()
+                    text = stringResource(R.string.game_rules_body)
                 )
             },
             confirmButton = {

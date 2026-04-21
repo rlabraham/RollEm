@@ -22,6 +22,7 @@ object LeaderBoard {
             PlayGames.getLeaderboardsClient(activity)
                 .getLeaderboardIntent(activity.getString(R.string.leaderboard_id))
                 .addOnSuccessListener { intent ->
+                    Log.d("Leaderboards", "Leaderboard intent loaded successfully")
                     launcher.launch(intent)
                 }
                 .addOnFailureListener { error ->
@@ -32,9 +33,13 @@ object LeaderBoard {
     }
 
     fun submitScore(score: Long, activity: Activity) {
-        PlayGames.getLeaderboardsClient(activity).submitScore(
-            activity.getString(R.string.leaderboard_id),
-            score
-        )
+        PlayGames.getLeaderboardsClient(activity)
+            .submitScoreImmediate(activity.getString(R.string.leaderboard_id), score)
+            .addOnSuccessListener {
+                Log.d("Leaderboards", "Score submitted successfully: $score")
+            }
+            .addOnFailureListener { error ->
+                Log.e("Leaderboards", "Failed to submit score: $score", error)
+            }
     }
 }

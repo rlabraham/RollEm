@@ -2,6 +2,9 @@
     <string name="app_name">Roll Em</string>
     <string name="roll">Roll</string>
     <string name="score">Score: %s</string>
+    <string name="final_score">Final Score: %s</string>
+    <string name="submit_score">Submit Score</string>
+    <string name="game_over">Game Over</string>
     <string name="rolls_left">Rolls Left: %s</string>
     <string name="current_streak">Current Streak: %s</string>
 
@@ -13,6 +16,7 @@
     <string name="high_scores">High Scores</string>
     <string name="reset">Reset</string>
     <string name="game_rules">Game Rules</string>
+    <string name="game_rules_body">You start with 10 rolls\n\nEach roll you gain points equal to that roll\n\nEach time you roll the same value in a row, the length of the streak is added to your score.\n  \u2022 A 6 always continues the streak\n  \u2022 A 1 always ends the streak\n\nWith each roll you may guess odd or even\n  \u2022 If you guess correctly you don\'t lose a roll\n  \u2022 If you guess incorrectly you lose two rolls (instead of one)\n\nThe game ends when all rolls are depleted</string>
     <string name="sign_in">Sign In</string>
 
     <string name="game_services_project_id">138874105102</string>
