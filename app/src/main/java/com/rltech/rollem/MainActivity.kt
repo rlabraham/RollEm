@@ -47,6 +47,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.google.android.gms.games.PlayGamesSdk
 import com.rltech.rollem.admob.Ads
 import com.rltech.rollem.admob.Ads.BannerAd
@@ -127,9 +128,9 @@ class MainActivity : ComponentActivity() {
             if (showGameOverDialog) {
                 GameOverDialog(
                     finalScore = finalScore,
+
                     onClose = {
-                        LeaderBoard.submitScore(finalScore, this@MainActivity)
-                        resetGame()
+                        resetGame(finalScore)
                         showGameOverDialog = false
                     }
                 )
@@ -258,7 +259,13 @@ class MainActivity : ComponentActivity() {
                 )
             },
             text = {
-                Text(text = stringResource(R.string.final_score, finalScore))
+                Column {
+                    Text(
+                        text = stringResource(R.string.prev_score, GameState.getLastScore(this@MainActivity)),
+                        fontSize = 12.sp
+                    )
+                    Text(text = stringResource(R.string.final_score, finalScore))
+                }
             },
             confirmButton = {
                 TextButton(onClick = onClose) {
@@ -361,12 +368,15 @@ class MainActivity : ComponentActivity() {
         )
     }
 
-    private fun resetGame() {
+    private fun resetGame(finalScore: Long = 0L) {
+        GameState.saveLastScore(this@MainActivity, finalScore)
+        LeaderBoard.submitScore(finalScore, this@MainActivity)
+        GameState.resetGameState()
+
         if (Ads.interstitialAd != null) {
             Ads.interstitialAd?.show(this)
         } else {
             Ads.loadInterstitialAd(this)
         }
-        GameState.resetGameState()
     }
 }

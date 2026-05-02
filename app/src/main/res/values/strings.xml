@@ -2,6 +2,7 @@
     <string name="app_name">Roll Em</string>
     <string name="roll">Roll</string>
     <string name="score">Score: %s</string>
+    <string name="prev_score">Previous Score: %s</string>
     <string name="final_score">Final Score: %s</string>
     <string name="submit_score">Submit Score</string>
     <string name="game_over">Game Over</string>
