@@ -19,7 +19,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
@@ -34,6 +37,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -58,7 +62,6 @@ import com.rltech.rollem.gamestate.OddEvenGuess
 import com.rltech.rollem.googleplay.Authentication
 import com.rltech.rollem.googleplay.LeaderBoard
 import com.rltech.rollem.ui.theme.RollEmTheme
-
 
 private val CHALK_BOARD_FONT = FontFamily(Font(R.font.chalk_board))
 
@@ -108,7 +111,7 @@ class MainActivity : ComponentActivity() {
                 BannerAd(TOP_BANNER_ID)
                 HelperOptions()
                 Hud()
-                OddEvenNoneSelector()
+                GuessControlsRow()
                 Box(
                     modifier = Modifier
                         .weight(1f)
@@ -248,44 +251,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    @Preview("Game Over")
-    @Composable
-    fun GameOverDialog(finalScore: Long = 0L, onClose: () -> Unit = {}) {
-        val isPreview = LocalInspectionMode.current
-        val lastScore = if (isPreview) 0L else GameState.getLastScore(this@MainActivity)
-
-        AlertDialog(
-            onDismissRequest = onClose,
-            containerColor = Color(0xFF5B5B5B),
-            title = {
-                Text(
-                    text = stringResource(R.string.game_over),
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFFB71A1A)
-                )
-            },
-            text = {
-                Column {
-                    Text(
-                        text = stringResource(R.string.prev_score, lastScore),
-                        fontSize = 12.sp,
-                        color = Color(0xFFFBC02D)
-                    )
-                    Text(
-                        text = stringResource(R.string.final_score, finalScore),
-                        color = Color(0xFF2B8130)
-                    )
-                }
-            },
-            confirmButton = {
-                TextButton(onClick = onClose) {
-                    Text(stringResource(R.string.submit_score))
-                }
-            }
-        )
-    }
-
-
     @Composable
     fun ScoreDisplay(modifier: Modifier = Modifier) {
         Text(
@@ -320,43 +285,85 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun OddEvenNoneSelector(modifier: Modifier = Modifier) {
-        val options = OddEvenGuess.entries.toTypedArray()
-
+    fun GuessControlsRow(modifier: Modifier = Modifier) {
         Row(
             modifier = modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
+            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            SingleChoiceSegmentedButtonRow {
-                options.forEachIndexed { index, option ->
-                    SegmentedButton(
-                        shape = SegmentedButtonDefaults.itemShape(
-                            index = index,
-                            count = options.size
-                        ),
+            OddEvenSelector()
+            RollGuessSelector()
+        }
+    }
+
+    @Composable
+    fun OddEvenSelector() {
+        val options = OddEvenGuess.entries.toTypedArray()
+
+        SingleChoiceSegmentedButtonRow {
+            options.forEachIndexed { index, option ->
+                SegmentedButton(
+                    shape = SegmentedButtonDefaults.itemShape(
+                        index = index,
+                        count = options.size
+                    ),
+                    onClick = {
+                        GameState.oddEvenGuess = if (GameState.oddEvenGuess == option) null else option
+                    },
+                    selected = option == GameState.oddEvenGuess,
+                    label = {
+                        Text(stringResource(option.resource))
+                    },
+                    colors = SegmentedButtonDefaults.colors(
+                        activeContainerColor =
+                            if (option == OddEvenGuess.ODD)
+                                Color.Red
+                            else
+                                Color.Green
+                    )
+                )
+            }
+        }
+    }
+
+    @Composable
+    fun RollGuessSelector(modifier: Modifier = Modifier) {
+        var expanded by remember { mutableStateOf(false) }
+
+        Box(modifier = modifier) {
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color.White)
+                    .clickable { expanded = true }
+                    .padding(horizontal = 10.dp, vertical = 6.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.next_guess, GameState.rollGuess),
+                    color = Color.Black,
+                )
+            }
+
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                (0..6).forEach { guess ->
+                    DropdownMenuItem(
+                        text = { Text(guess.toString()) },
                         onClick = {
-                            GameState.oddEvenGuess = if (GameState.oddEvenGuess == option) null else option
-                        },
-                        selected = option == GameState.oddEvenGuess,
-                        label = {
-                            Text(stringResource(option.resource))
-                        },
-                        colors = SegmentedButtonDefaults.colors(
-                            activeContainerColor =
-                                if (option == OddEvenGuess.ODD)
-                                    Color.Red
-                                else
-                                    Color.Green
-                        )
+                            GameState.rollGuess = guess
+                            expanded = false
+                        }
                     )
                 }
             }
         }
     }
 
+    @Preview("Rules")
     @Composable
-    fun RulesDialog(onDismiss: () -> Unit) {
+    fun RulesDialog(onDismiss: () -> Unit = {}) {
         AlertDialog(
             onDismissRequest = onDismiss,
             title = {
@@ -373,6 +380,43 @@ class MainActivity : ComponentActivity() {
             confirmButton = {
                 TextButton(onClick = onDismiss) {
                     Text("Close")
+                }
+            }
+        )
+    }
+
+    @Preview("Game Over")
+    @Composable
+    fun GameOverDialog(finalScore: Long = 0L, onClose: () -> Unit = {}) {
+        val isPreview = LocalInspectionMode.current
+        val lastScore = if (isPreview) 0L else GameState.getLastScore(this@MainActivity)
+
+        AlertDialog(
+            onDismissRequest = onClose,
+            containerColor = Color(0xFF5B5B5B),
+            title = {
+                Text(
+                    text = stringResource(R.string.game_over),
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFFB71A1A)
+                )
+            },
+            text = {
+                Column {
+                    Text(
+                        text = stringResource(R.string.prev_score, lastScore),
+                        fontSize = 12.sp,
+                        color = Color(0xFFFBC02D)
+                    )
+                    Text(
+                        text = stringResource(R.string.final_score, finalScore),
+                        color = Color(0xFF2B8130)
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = onClose) {
+                    Text(stringResource(R.string.submit_score))
                 }
             }
         )

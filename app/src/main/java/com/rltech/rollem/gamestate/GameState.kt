@@ -57,7 +57,7 @@ object GameState {
         val streakBonus = if (streak.size > 1) streak.size else 0
         val rollGuessModifier = if (rollGuess == roll) rollGuess else rollGuess * -1
 
-        score += roll + streakBonus + rollGuessModifier
+        score = (score + roll + streakBonus + rollGuessModifier).coerceAtLeast(0L)
     }
 
     private fun updateRollsLeft(roll: Int = 0) {
