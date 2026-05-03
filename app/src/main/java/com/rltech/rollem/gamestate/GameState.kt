@@ -20,6 +20,8 @@ object GameState {
 
     var oddEvenGuess by mutableStateOf<OddEvenGuess?>(null)
 
+    var rollGuess by mutableIntStateOf(0)
+
     var score by mutableLongStateOf(0)
         private set
 
@@ -53,7 +55,9 @@ object GameState {
 
     private fun updateScore(roll: Int = 0) {
         val streakBonus = if (streak.size > 1) streak.size else 0
-        score = score + roll + streakBonus
+        val rollGuessModifier = if (rollGuess == roll) rollGuess else rollGuess * -1
+
+        score += roll + streakBonus + rollGuessModifier
     }
 
     private fun updateRollsLeft(roll: Int = 0) {
@@ -66,7 +70,7 @@ object GameState {
             if (correctGuess) ++increment else --increment
         }
 
-        rollsLeft = rollsLeft + increment
+        rollsLeft += increment
     }
 
     private fun updateStreak(roll: Int = 0) {

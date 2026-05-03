@@ -248,23 +248,33 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @Preview("Game Over")
     @Composable
-    fun GameOverDialog(finalScore: Long, onClose: () -> Unit) {
+    fun GameOverDialog(finalScore: Long = 0L, onClose: () -> Unit = {}) {
+        val isPreview = LocalInspectionMode.current
+        val lastScore = if (isPreview) 0L else GameState.getLastScore(this@MainActivity)
+
         AlertDialog(
             onDismissRequest = onClose,
+            containerColor = Color(0xFF5B5B5B),
             title = {
                 Text(
                     text = stringResource(R.string.game_over),
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFFB71A1A)
                 )
             },
             text = {
                 Column {
                     Text(
-                        text = stringResource(R.string.prev_score, GameState.getLastScore(this@MainActivity)),
-                        fontSize = 12.sp
+                        text = stringResource(R.string.prev_score, lastScore),
+                        fontSize = 12.sp,
+                        color = Color(0xFFFBC02D)
                     )
-                    Text(text = stringResource(R.string.final_score, finalScore))
+                    Text(
+                        text = stringResource(R.string.final_score, finalScore),
+                        color = Color(0xFF2B8130)
+                    )
                 }
             },
             confirmButton = {
