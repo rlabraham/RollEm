@@ -1,6 +1,5 @@
 package com.rltech.rollem.gamestate
 
-import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
@@ -8,12 +7,8 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.core.content.edit
 
 const val DEFAULT_ROLES_LEFT = 10
-
-private const val PREFS_NAME = "game_prefs"
-private const val LAST_SCORE_KEY = "last_score"
 
 object GameState {
     private val streak: SnapshotStateList<Int> = mutableStateListOf()
@@ -41,16 +36,6 @@ object GameState {
         rollsLeft = DEFAULT_ROLES_LEFT
         oddEvenGuess = null
         streak.clear()
-    }
-
-    fun saveLastScore(context: Context, score: Long) {
-        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        prefs.edit { putLong(LAST_SCORE_KEY, score) }
-    }
-
-    fun getLastScore(context: Context): Long {
-        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        return prefs.getLong(LAST_SCORE_KEY, 0L)
     }
 
     private fun updateScore(roll: Int = 0) {

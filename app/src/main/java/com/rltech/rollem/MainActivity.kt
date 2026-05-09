@@ -58,7 +58,9 @@ import com.rltech.rollem.admob.Ads.BannerAd
 import com.rltech.rollem.admob.BOTTOM_BANNER_ID
 import com.rltech.rollem.admob.TOP_BANNER_ID
 import com.rltech.rollem.gamestate.GameState
+import com.rltech.rollem.gamestate.LAST_SCORE_KEY
 import com.rltech.rollem.gamestate.OddEvenGuess
+import com.rltech.rollem.gamestate.SaveManager
 import com.rltech.rollem.googleplay.Authentication
 import com.rltech.rollem.googleplay.LeaderBoard
 import com.rltech.rollem.ui.theme.RollEmTheme
@@ -389,7 +391,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun GameOverDialog(finalScore: Long = 0L, onClose: () -> Unit = {}) {
         val isPreview = LocalInspectionMode.current
-        val lastScore = if (isPreview) 0L else GameState.getLastScore(this@MainActivity)
+        val lastScore = if (isPreview) 0L else SaveManager.getLong(this@MainActivity, LAST_SCORE_KEY)
 
         AlertDialog(
             onDismissRequest = onClose,
@@ -423,7 +425,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun resetGame(finalScore: Long = 0L) {
-        GameState.saveLastScore(this@MainActivity, finalScore)
+        SaveManager.saveLong(this@MainActivity, LAST_SCORE_KEY,finalScore)
         LeaderBoard.submitScore(finalScore, this@MainActivity)
         GameState.resetGameState()
 

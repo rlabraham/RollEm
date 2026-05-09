@@ -50,7 +50,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation("androidx.fragment:fragment-ktx:1.8.6")
+    implementation("androidx.fragment:fragment-ktx:1.8.9")
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
@@ -58,6 +58,8 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.play.services.ads)
     implementation (libs.play.services.games)
+
+    implementation(libs.kotlinx.serialization.json)
 
     testImplementation(libs.junit)
 
