@@ -1,5 +1,6 @@
-package com.rltech.rollem.gamestate
+package com.rltech.rollem.game.state
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
@@ -7,8 +8,12 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import com.rltech.rollem.game.OddEvenGuess
+import com.rltech.rollem.game.data.GameDataHelper
 
-const val DEFAULT_ROLES_LEFT = 10
+private const val DEFAULT_ROLES_LEFT = 10
+
+private const val STARTING_SCORE = 0L
 
 object GameState {
     private val streak: SnapshotStateList<Int> = mutableStateListOf()
@@ -17,7 +22,7 @@ object GameState {
 
     var rollGuess by mutableIntStateOf(0)
 
-    var score by mutableLongStateOf(0)
+    var score by mutableLongStateOf(STARTING_SCORE)
         private set
 
     var rollsLeft by mutableIntStateOf(DEFAULT_ROLES_LEFT)
@@ -29,10 +34,15 @@ object GameState {
         updateStreak(roll)
         updateScore(roll)
         updateRollsLeft(roll)
+        updateGameData(roll)
     }
 
-    fun resetGameState() {
-        score = 0
+    fun resetGameState(context: Context) {
+        GameDataHelper.setFinalScore(score)
+        GameDataHelper.saveGameData(context)
+        GameDataHelper.resetGameData()
+
+        score = STARTING_SCORE
         rollsLeft = DEFAULT_ROLES_LEFT
         oddEvenGuess = null
         streak.clear()
@@ -59,15 +69,27 @@ object GameState {
     }
 
     private fun updateStreak(roll: Int = 0) {
-        val last = streak.lastOrNull()
+        val lastRoll = streak.lastOrNull()
 
         when {
             roll == 1 -> streak.clear()
-            streak.isEmpty() || last == 6 || last == roll -> streak.add(roll)
+            streak.isEmpty() || lastRoll == 6 || lastRoll == roll -> streak.add(roll)
             else -> {
                 streak.clear()
                 streak.add(roll)
             }
         }
+    }
+
+    private fun updateGameData(roll: Int = 0) {
+        val streakSize = if (streak.size > 1) streak.size else 0
+
+        GameDataHelper.recordRoll(
+            roll,
+            score,
+            streakSize,
+            oddEvenGuess,
+            rollGuess
+        )
     }
 }

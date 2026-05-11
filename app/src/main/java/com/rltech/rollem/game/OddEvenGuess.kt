@@ -1,4 +1,4 @@
-package com.rltech.rollem.gamestate
+package com.rltech.rollem.game
 
 import com.rltech.rollem.R
 

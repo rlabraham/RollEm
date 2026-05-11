@@ -57,10 +57,10 @@ import com.rltech.rollem.admob.Ads
 import com.rltech.rollem.admob.Ads.BannerAd
 import com.rltech.rollem.admob.BOTTOM_BANNER_ID
 import com.rltech.rollem.admob.TOP_BANNER_ID
-import com.rltech.rollem.gamestate.GameState
-import com.rltech.rollem.gamestate.LAST_SCORE_KEY
-import com.rltech.rollem.gamestate.OddEvenGuess
-import com.rltech.rollem.gamestate.SaveManager
+import com.rltech.rollem.game.OddEvenGuess
+import com.rltech.rollem.game.save.LAST_SCORE_KEY
+import com.rltech.rollem.game.save.SaveManager
+import com.rltech.rollem.game.state.GameState
 import com.rltech.rollem.googleplay.Authentication
 import com.rltech.rollem.googleplay.LeaderBoard
 import com.rltech.rollem.ui.theme.RollEmTheme
@@ -169,7 +169,7 @@ class MainActivity : ComponentActivity() {
                 textDecoration = TextDecoration.Underline,
                 color = Color(textColor),
                 modifier = Modifier.clickable{
-                    GameState.resetGameState()
+                    GameState.resetGameState(this@MainActivity)
                 }
             )
             if (Authentication.isAuthenticated){
@@ -425,9 +425,8 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun resetGame(finalScore: Long = 0L) {
-        SaveManager.saveLong(this@MainActivity, LAST_SCORE_KEY,finalScore)
         LeaderBoard.submitScore(finalScore, this@MainActivity)
-        GameState.resetGameState()
+        GameState.resetGameState(this@MainActivity)
 
         if (Ads.interstitialAd != null) {
             Ads.interstitialAd?.show(this)

@@ -1,4 +1,4 @@
-package com.rltech.rollem.gamestate
+package com.rltech.rollem.game.save
 
 const val PREFS_NAME = "game_prefs"
 
