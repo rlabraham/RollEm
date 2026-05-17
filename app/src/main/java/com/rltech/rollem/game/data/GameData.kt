@@ -6,9 +6,5 @@ private const val DEFAULT_TOTAL_ROLLS = 0
 data class GameData(
     var finalScore: Long = DEFAULT_FINAL_SCORE,
     var totalRolls: Int = DEFAULT_TOTAL_ROLLS,
-    val rollValues: MutableList<Int> = mutableListOf<Int>(),
-    val rollScores: MutableList<Long> = mutableListOf(),
-    val rollStreaks: MutableList<Int> = mutableListOf(),
-    val oddEvenPredictions: MutableList<String> = mutableListOf(),
-    val nextRollPredictions: MutableList<Int> = mutableListOf()
+    val rollRecords: MutableList<RollRecord> = mutableListOf()
 )

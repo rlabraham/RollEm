@@ -86,7 +86,6 @@ object GameState {
 
         GameDataHelper.recordRoll(
             roll,
-            score,
             streakSize,
             oddEvenGuess,
             rollGuess

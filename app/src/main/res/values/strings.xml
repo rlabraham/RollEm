@@ -27,4 +27,19 @@
 
     <string name="playgames_signin_success">Signed in to Play Games</string>
     <string name="playgames_signin_fail">Play Games sign-in failed</string>
+
+    <string name="stats">Stats</string>
+    <string name="current_game">Current Game</string>
+    <string name="previous_game">Previous Games</string>
+    <string name="total_rolls">Total Rolls</string>
+    <string name="avg_roll">Avg Roll</string>
+    <string name="odd_even_accuracy">Odd/Even Accuracy</string>
+    <string name="value_guess_accuracy">Value Guess Accuracy</string>
+    <string name="accuracy_display">%d/%d (%d%%)</string>
+
+    <string name="roll_column">Roll #</string>
+    <string name="value_column">Value</string>
+    <string name="streak_column">Streak</string>
+    <string name="odd_even_column">Odd/Even Guess</string>
+    <string name="value_guess_column">Value Guess</string>
 </resources>
