@@ -1,5 +1,6 @@
 package com.rltech.rollem
 
+import android.content.Intent
 import android.content.res.Configuration
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -63,7 +64,9 @@ import com.rltech.rollem.game.save.SaveManager
 import com.rltech.rollem.game.state.GameState
 import com.rltech.rollem.googleplay.Authentication
 import com.rltech.rollem.googleplay.LeaderBoard
+import com.rltech.rollem.ui.stats.StatsActivity
 import com.rltech.rollem.ui.theme.RollEmTheme
+
 
 private val CHALK_BOARD_FONT = FontFamily(Font(R.font.chalk_board))
 
@@ -168,16 +171,24 @@ class MainActivity : ComponentActivity() {
                 text = stringResource(R.string.reset),
                 textDecoration = TextDecoration.Underline,
                 color = Color(textColor),
-                modifier = Modifier.clickable{
+                modifier = Modifier.clickable {
                     GameState.resetGameState(this@MainActivity)
                 }
             )
-            if (Authentication.isAuthenticated){
+            Text(
+                text = stringResource(R.string.game_stats),
+                textDecoration = TextDecoration.Underline,
+                color = Color(textColor),
+                modifier = Modifier.clickable {
+                    goToStatsScreen()
+                }
+            )
+            if (Authentication.isAuthenticated) {
                 Text(
                     text = stringResource(R.string.high_scores),
                     textDecoration = TextDecoration.Underline,
                     color = Color(textColor),
-                    modifier = Modifier.clickable{
+                    modifier = Modifier.clickable {
                         LeaderBoard.showLeaderboard(leaderboardLauncher, this@MainActivity)
                     }
                 )
@@ -422,6 +433,10 @@ class MainActivity : ComponentActivity() {
                 }
             }
         )
+    }
+
+    private fun goToStatsScreen() {
+        startActivity(Intent(this@MainActivity, StatsActivity::class.java))
     }
 
     private fun resetGame(finalScore: Long = 0L) {

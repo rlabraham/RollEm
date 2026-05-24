@@ -21,6 +21,7 @@
     <string name="game_rules">Game Rules</string>
     <string name="game_rules_body">You start with 10 rolls\n\nEach roll you gain points equal to that roll\n\nEach time you roll the same value in a row, the length of the streak is added to your score.\n  \u2022 A 6 always continues the streak\n  \u2022 A 1 always ends the streak\n\nWith each roll you may guess odd or even\n  \u2022 If you guess correctly you don\'t lose a roll\n  \u2022 If you guess incorrectly you lose two rolls (instead of one)\n\nEach roll, you may guess a number between 0 and 6\n  \u2022 Guessing correctly adds that number to your score\n  \u2022 Guessing incorrectly subtracts that number from your score\n\nThe game ends when all rolls are depleted</string>
     <string name="sign_in">Sign In</string>
+    <string name="game_stats">Game Stats</string>
 
     <string name="game_services_project_id">138874105102</string>
     <string name="leaderboard_id">CgkIjtqqrIUEEAIQAA</string>
@@ -29,13 +30,16 @@
     <string name="playgames_signin_fail">Play Games sign-in failed</string>
 
     <string name="stats">Stats</string>
-    <string name="current_game">Current Game</string>
-    <string name="previous_game">Previous Games</string>
-    <string name="total_rolls">Total Rolls</string>
-    <string name="avg_roll">Avg Roll</string>
-    <string name="odd_even_accuracy">Odd/Even Accuracy</string>
-    <string name="value_guess_accuracy">Value Guess Accuracy</string>
-    <string name="accuracy_display">%d/%d (%d%%)</string>
+    <string name="back_button">Back</string>
+    <string name="no_rolls_yet">No rolls yet</string>
+    <string name="current_game_section">Current Game</string>
+    <string name="previous_games_section">Previous Games</string>
+
+    <string name="total_rolls">Total Rolls: %d</string>
+    <string name="avg_roll">Avg Roll: %s</string>
+    <string name="highest_streak">Highest Streak: %d</string>
+    <string name="odd_even_accuracy">Odd/Even Accuracy: %d/%d (%d%%)</string>
+    <string name="value_guess_accuracy">Value Guess Accuracy: %d/%d (%d%%)</string>
 
     <string name="roll_column">Roll #</string>
     <string name="value_column">Value</string>

@@ -51,9 +51,9 @@ object SaveManager {
         key: String
     ): List<T> {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        val raw = prefs.getString(key, null) ?: return emptyList()
+        val raw = prefs.getString(key, null) ?: return mutableListOf()
         val serializer = ListSerializer(serializer<T>())
         return runCatching { json.decodeFromString(serializer, raw) }
-            .getOrDefault(emptyList())
+            .getOrDefault(mutableListOf())
     }
 }

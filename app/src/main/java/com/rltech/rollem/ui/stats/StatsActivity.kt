@@ -1,5 +1,6 @@
 package com.rltech.rollem.ui.stats
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -27,9 +28,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.rltech.rollem.R
 import com.rltech.rollem.game.data.GameData
 import com.rltech.rollem.game.data.GameDataHelper
 import com.rltech.rollem.game.data.RollRecord
@@ -39,6 +42,11 @@ import kotlin.math.roundToInt
 class StatsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val isPhone = resources.configuration.smallestScreenWidthDp < 600
+        if (isPhone) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+        }
 
         setContent {
             RollEmTheme {
@@ -73,14 +81,26 @@ fun StatsScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Stats", color = Color.White, fontWeight = FontWeight.Bold)
-            Button(onClick = onBack) { Text("Back") }
+            Text(
+                text = stringResource(R.string.stats),
+                color = Color.White,
+                fontWeight = FontWeight.Bold
+            )
+            Button(onClick = onBack) {
+                Text(text = stringResource(R.string.back_button))
+            }
         }
 
         Spacer(modifier = Modifier.height(10.dp))
-        GameSection(title = "Current Game", game = currentGame)
+        GameSection(
+            title = stringResource(R.string.current_game_section),
+            game = currentGame
+        )
         Spacer(modifier = Modifier.height(16.dp))
-        GameSection(title = "Previous Game", game = previousGame)
+        GameSection(
+            title = stringResource(R.string.previous_games_section),
+            game = previousGame
+        )
     }
 }
 
@@ -118,13 +138,33 @@ private fun SummaryRow(game: GameData) {
     val oddEvenPct = ((oddEvenCorrect * 100.0) / total).roundToInt()
     val nextValuePct = ((nextValueCorrect * 100.0) / total).roundToInt()
 
+    val avgRollString = "%.2f".format(avgRoll)
+
     Column {
-        Text("Final Score: ${game.finalScore}", color = Color(0xFF90EE90))
-        Text("Total Rolls: ${game.totalRolls}", color = Color.White)
-        Text("Avg Roll: ${"%.2f".format(avgRoll)}", color = Color.White)
-        Text("Highest Streak: $highestStreak", color = Color.White)
-        Text("Odd/Even Accuracy: $oddEvenCorrect/$total ($oddEvenPct%)", color = Color.White)
-        Text("Value Guess Accuracy: $nextValueCorrect/$total ($nextValuePct%)", color = Color.White)
+        Text(
+            text = stringResource(R.string.final_score, game.finalScore),
+            color = Color(0xFF90EE90)
+        )
+        Text(
+            text = stringResource(R.string.total_rolls, game.totalRolls),
+            color = Color.White
+        )
+        Text(
+            text = stringResource(R.string.avg_roll, avgRollString),
+            color = Color.White
+        )
+        Text(
+            text = stringResource(R.string.highest_streak, highestStreak),
+            color = Color.White
+        )
+        Text(
+            text = stringResource(R.string.odd_even_accuracy, oddEvenCorrect, total, oddEvenPct),
+            color = Color.White
+        )
+        Text(
+            text = stringResource(R.string.value_guess_accuracy, nextValueCorrect, total, nextValuePct),
+            color = Color.White
+        )
     }
 }
 
@@ -149,7 +189,10 @@ private fun StatsTable(records: List<RollRecord>) {
                     .border(1.dp, Color(0xFF666666))
                     .padding(10.dp)
             ) {
-                Text("No rolls yet", color = Color.LightGray)
+                Text(
+                    text = stringResource(R.string.no_rolls_yet),
+                    color = Color.LightGray
+                )
             }
         }
     }
@@ -164,11 +207,11 @@ private fun TableHeader() {
             .background(Color(0xFF3A3A3A))
             .padding(vertical = 6.dp)
     ) {
-        HeaderCell("Roll #", 80.dp)
-        HeaderCell("Value", 80.dp)
-        HeaderCell("Streak", 80.dp)
-        HeaderCell("Odd/Even Guess", 140.dp)
-        HeaderCell("Next Guess", 120.dp)
+        HeaderCell(stringResource(R.string.roll_column), 80.dp)
+        HeaderCell(stringResource(R.string.value_column), 80.dp)
+        HeaderCell(stringResource(R.string.streak_column), 80.dp)
+        HeaderCell(stringResource(R.string.odd_even_column), 140.dp)
+        HeaderCell(stringResource(R.string.value_guess_column), 120.dp)
     }
 }
 
