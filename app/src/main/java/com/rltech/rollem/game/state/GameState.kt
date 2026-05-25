@@ -45,6 +45,8 @@ object GameState {
         score = STARTING_SCORE
         rollsLeft = DEFAULT_ROLES_LEFT
         oddEvenGuess = null
+        rollGuess = 0
+
         streak.clear()
     }
 
