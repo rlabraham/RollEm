@@ -2,7 +2,6 @@ package com.rltech.rollem
 
 import android.content.Intent
 import android.content.res.Configuration
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -31,7 +30,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,7 +40,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -64,6 +61,7 @@ import com.rltech.rollem.game.save.SaveManager
 import com.rltech.rollem.game.state.GameState
 import com.rltech.rollem.googleplay.Authentication
 import com.rltech.rollem.googleplay.LeaderBoard
+import com.rltech.rollem.ui.game.DiceRoller
 import com.rltech.rollem.ui.stats.StatsActivity
 import com.rltech.rollem.ui.theme.RollEmTheme
 
@@ -123,10 +121,13 @@ class MainActivity : ComponentActivity() {
                         .fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Dice(
-                        onGameOver = { score ->
-                            finalScore = score
-                            showGameOverDialog = true
+                    DiceRoller(
+                        onRollFinalized = { result ->
+                            GameState.updateGameState(result)
+                            if (GameState.rollsLeft <= 0) {
+                                finalScore = GameState.score
+                                showGameOverDialog = true
+                            }
                         }
                     )
                 }
@@ -219,48 +220,6 @@ class MainActivity : ComponentActivity() {
             ScoreDisplay()
             RollsLeftDisplay()
             StreakDisplay()
-        }
-    }
-
-    @Composable
-    fun Dice(
-        modifier: Modifier = Modifier,
-        onGameOver: (Long) -> Unit
-    ) {
-        var result by remember { mutableIntStateOf(1) }
-
-        val imageResource = when (result) {
-            1 -> R.drawable.dice_1
-            2 -> R.drawable.dice_2
-            3 -> R.drawable.dice_3
-            4 -> R.drawable.dice_4
-            5 -> R.drawable.dice_5
-            else -> R.drawable.dice_6
-        }
-
-        val context = LocalContext.current
-        val isPreview = LocalInspectionMode.current
-
-        val mp = remember(context, isPreview) {
-            if (isPreview) null else MediaPlayer.create(context, R.raw.dice_roll)
-        }
-
-        Column(
-            modifier = modifier
-                .clickable(onClick = {
-                    mp?.start()
-                    result = (1..6).random()
-                    GameState.updateGameState(result)
-                    if (GameState.rollsLeft <= 0) {
-                        onGameOver(GameState.score)
-                    }
-                }),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(imageResource),
-                contentDescription = result.toString(),
-            )
         }
     }
 
