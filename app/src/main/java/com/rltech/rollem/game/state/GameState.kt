@@ -11,7 +11,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.rltech.rollem.game.OddEvenGuess
 import com.rltech.rollem.game.data.GameDataHelper
 
-private const val DEFAULT_ROLES_LEFT = 10
+private const val DEFAULT_ROLLS_LEFT = 10
 
 private const val STARTING_SCORE = 0L
 
@@ -25,7 +25,7 @@ object GameState {
     var score by mutableLongStateOf(STARTING_SCORE)
         private set
 
-    var rollsLeft by mutableIntStateOf(DEFAULT_ROLES_LEFT)
+    var rollsLeft by mutableIntStateOf(DEFAULT_ROLLS_LEFT)
         private set
 
     val getStreak = streak
@@ -43,7 +43,7 @@ object GameState {
         GameDataHelper.resetGameData()
 
         score = STARTING_SCORE
-        rollsLeft = DEFAULT_ROLES_LEFT
+        rollsLeft = DEFAULT_ROLLS_LEFT
         oddEvenGuess = null
         rollGuess = 0
 

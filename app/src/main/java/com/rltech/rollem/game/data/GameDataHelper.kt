@@ -40,7 +40,7 @@ object GameDataHelper {
         if (rolls == 0) 0.0 else values.average()
 
     fun highestStreak(
-        streaks: List <Int> = gameData.rollRecords.map { it.rollValue }
+        streaks: List <Int> = gameData.rollRecords.map { it.streakSize }
     ): Int =
         streaks.maxOrNull() ?: 0
 
@@ -71,7 +71,7 @@ object GameDataHelper {
     fun getSavedGameData(context: Context) = GameData(
         finalScore = SaveManager.getLong(context, LAST_SCORE_KEY),
         totalRolls = SaveManager.getInt(context, LAST_ROLLS_TOTAL_KEY),
-        rollRecords = SaveManager.getList<RollRecord>(context, ROLL_RECORDS_KEY) as MutableList,
+        rollRecords = SaveManager.getList<RollRecord>(context, ROLL_RECORDS_KEY).toMutableList()
     )
 
     fun resetGameData() {
