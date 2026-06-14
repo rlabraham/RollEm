@@ -80,7 +80,7 @@ class MainActivity : ComponentActivity() {
 
         Ads.init(this)
         PlayGamesSdk.initialize(this)
-        Authentication.refreshAuthenticationStatus(this)
+        Authentication.signIn(this)
 
         enableEdgeToEdge()
         setContent {

@@ -24,7 +24,7 @@
         <activity android:name=".ui.stats.StatsActivity" />
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-2470800019467760~2798419968"/>
+            android:value="ca-app-pub-2470800019467760~2736208079"/>
         <meta-data android:name="com.google.android.gms.games.APP_ID"
             android:value="@string/game_services_project_id"/>
     </application>

@@ -21,11 +21,11 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 
-const val BOTTOM_BANNER_ID = "ca-app-pub-2470800019467760/3164718645"
+const val BOTTOM_BANNER_ID = "ca-app-pub-2470800019467760/8195289013"
 const val TEST_BANNER_ID = "ca-app-pub-3940256099942544/6300978111"
-const val TOP_BANNER_ID = "ca-app-pub-2470800019467760/8597513307"
+const val TOP_BANNER_ID = "ca-app-pub-2470800019467760/5390333130"
 
-const val RESET_AD_ID = "ca-app-pub-2470800019467760/7973716834"
+const val RESET_AD_ID = "ca-app-pub-2470800019467760/4077251463"
 const val RESET_AD_TEST_ID = "ca-app-pub-3940256099942544/1033173712"
 
 object Ads {
