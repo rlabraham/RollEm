@@ -11,3 +11,5 @@
   * Guessing correctly adds that number to their score
   * Guessing incorrectly subtracts that number from their score
 * The game ends when all rolls are depleted
+
+[Support the project](https://venmo.com/code?user_id=3791906710488515336&created=1790427864)
